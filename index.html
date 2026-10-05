@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fahmi Achmad Darojat | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0f172a',
+                        secondary: '#0284c7',
+                        accent: '#0d9488',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom background pattern for hero */
+        .bg-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #0284c7, #0d9488);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Custom Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-float-delayed { animation: float 4s ease-in-out 2s infinite; }
+        
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .animate-pulse-soft { animation: pulse-soft 5s infinite; }
+        
+        @keyframes shine {
+            100% { left: 125%; }
+        }
+        .hover-shine { position: relative; overflow: hidden; }
+        .hover-shine::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-20deg);
+            transition: all 0.7s ease;
+        }
+        .hover-shine:hover::after { left: 125%; transition: 0.7s ease-in-out; }
+
+        @media (min-width: 768px) {
+            body { cursor: none; }
+        }
+        
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background-color: #0284c7;
+            position: fixed; top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9999; pointer-events: none;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        .cursor-outline {
+            width: 36px; height: 36px;
+            border: 2px solid rgba(13, 148, 136, 0.6);
+            position: fixed; top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9998; pointer-events: none;
+            transition: width 0.15s, height 0.15s, background-color 0.15s, border-color 0.15s;
+        }
+        .cursor-hover .cursor-outline {
+            width: 55px; height: 55px;
+            background-color: rgba(2, 132, 199, 0.1);
+            border-color: #0284c7;
+        }
+        .cursor-hover .cursor-dot {
+            width: 0; height: 0; /* Sembunyikan titik saat menyorot elemen interaktif */
+        }
+        
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; width: 0%; height: 4px;
+            background: linear-gradient(90deg, #0284c7, #0d9488);
+            z-index: 10000; border-radius: 0 2px 2px 0;
+            box-shadow: 0 0 10px rgba(13, 148, 136, 0.6);
+        }
+
+        .tilt-card { 
+            will-change: transform;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes waveText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); color: #0284c7; }
+        }
+        .text-wave span { 
+            display: inline-block; 
+            animation: waveText 2s infinite ease-in-out; 
+            transition: color 0.3s;
+        }
+
+        /* Back to top button animation */
+        .back-to-top {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-700 bg-slate-50 antialiased selection:bg-secondary selection:text-white">
+
+    <!-- Scroll Progress -->
+    <div id="scroll-progress"></div>
+    
+    <!-- Custom Cursor -->
+    <div class="cursor-dot hidden md:block"></div>
+    <div class="cursor-outline hidden md:block"></div>
+
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md z-50 border-b border-slate-200 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="#" class="font-heading font-bold text-xl tracking-tight text-primary">
+                    Fahmi<span class="text-secondary">.</span>
+                </a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-sm font-medium hover:text-secondary transition-colors">About</a>
+                    <a href="#education" class="text-sm font-medium hover:text-secondary transition-colors">Education</a>
+                    <a href="#achievements" class="text-sm font-medium hover:text-secondary transition-colors">Achievements</a>
+                    <a href="#skills" class="text-sm font-medium hover:text-secondary transition-colors">Skills</a>
+                    <a href="#experience" class="text-sm font-medium hover:text-secondary transition-colors">Experience</a>
+                    <a href="#publications" class="text-sm font-medium hover:text-secondary transition-colors">Publications</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-500 hover:text-primary">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 px-4 py-4 space-y-3 shadow-lg absolute w-full">
+            <a href="#about" class="block text-sm font-medium hover:text-secondary">About</a>
+            <a href="#education" class="block text-sm font-medium hover:text-secondary">Education</a>
+            <a href="#achievements" class="block text-sm font-medium hover:text-secondary">Achievements</a>
+            <a href="#skills" class="block text-sm font-medium hover:text-secondary">Skills</a>
+            <a href="#experience" class="block text-sm font-medium hover:text-secondary">Experience</a>
+            <a href="#publications" class="block text-sm font-medium hover:text-secondary">Publications</a>
+        </div>
+    </nav>
+
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-pattern overflow-hidden">
+        <!-- Animated Background Orbs -->
+        <div class="absolute top-20 left-10 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float pointer-events-none"></div>
+        <div class="absolute top-40 right-20 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float-delayed pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-4xl mx-auto" data-aos="zoom-in-up" data-aos-duration="1200">
+                
+                <!-- Foto Profil Placeholder -->
+                <div class="relative w-40 h-40 md:w-48 md:h-48 mx-auto mb-8 group cursor-pointer" data-aos="fade-down">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-secondary to-accent rounded-full animate-pulse-soft blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative w-full h-full rounded-full border-4 border-white overflow-hidden shadow-2xl transform group-hover:scale-105 transition-transform duration-300 bg-slate-100">
+                        <!-- Ganti URL src di bawah ini dengan link foto asli Anda -->
+                        <img src="https://placehold.co/400x400/0f172a/ffffff?text=FA&font=Montserrat" alt="Fahmi Achmad Darojat" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Badge Bintang -->
+                    <div class="absolute bottom-2 right-2 bg-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg text-yellow-500 animate-bounce border-2 border-slate-50">
+                        <i class="fas fa-star text-sm"></i>
+                    </div>
+                </div>
+
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-secondary text-sm font-medium mb-6 border border-blue-100 hover:scale-105 transition-transform duration-300 cursor-default shadow-sm">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+                    </span>
+                    Medical Student & Researcher
+                </div>
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-heading font-extrabold text-primary leading-tight mb-6 hover:scale-[1.02] transition-transform duration-500">
+                    Fahmi Achmad Darojat
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-600 font-medium mb-4 h-8" id="typewriter"></p>
+                
+                <p class="mt-4 text-slate-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+                    Memiliki minat besar di bidang <span class="font-semibold text-primary relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-secondary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left cursor-pointer">Medis</span>, <span class="font-semibold text-primary relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-secondary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left cursor-pointer">Inovasi</span>, dan <span class="font-semibold text-primary relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-secondary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left cursor-pointer">Investasi</span>. Rutin meningkatkan wawasan dan kemampuan analisa dalam penelitian.
+                </p>
+
+                <!-- Academic Profiles with Strong Hover Effects -->
+                <div class="mt-10 flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="400">
+                    <a href="https://www.researchgate.net/profile/Fahmi-Darojat-2?ev=hdr_xprf" target="_blank" class="flex items-center gap-2 px-6 py-3 bg-white text-slate-700 hover:text-white hover:bg-teal-600 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 border border-slate-200 hover:border-teal-500 transition-all duration-300 font-medium group">
+                        <i class="fab fa-researchgate text-xl text-teal-600 group-hover:text-white group-hover:rotate-12 transition-transform duration-300"></i> ResearchGate
+                    </a>
+                    <a href="https://scholar.google.com/citations?user=Lbxna8gAAAAJ&hl=id" target="_blank" class="flex items-center gap-2 px-6 py-3 bg-white text-slate-700 hover:text-white hover:bg-blue-600 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 border border-slate-200 hover:border-blue-500 transition-all duration-300 font-medium group">
+                        <i class="fas fa-graduation-cap text-xl text-blue-600 group-hover:text-white group-hover:-rotate-12 transition-transform duration-300"></i> Google Scholar
+                    </a>
+                    <a href="https://orcid.org/0009-0002-6792-3718" target="_blank" class="flex items-center gap-2 px-6 py-3 bg-white text-slate-700 hover:text-white hover:bg-green-600 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 border border-slate-200 hover:border-green-500 transition-all duration-300 font-medium group">
+                        <i class="fab fa-orcid text-xl text-green-600 group-hover:text-white group-hover:rotate-12 transition-transform duration-300"></i> ORCID
+                    </a>
+                </div>
+
+                <div class="mt-8 flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="500">
+                    <a href="https://wa.me/6285135336002" target="_blank" class="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-full shadow-[0_0_15px_rgba(37,211,102,0.4)] hover:shadow-[0_0_25px_rgba(37,211,102,0.6)] hover:-translate-y-2 transition-all duration-300 font-semibold group cursor-pointer">
+                        <i class="fab fa-whatsapp text-2xl group-hover:animate-bounce"></i> Hubungi via WhatsApp
+                    </a>
+                    <a href="mailto:fahmiayakina@gmail.com" class="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full shadow-[0_0_15px_rgba(239,68,68,0.4)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] hover:-translate-y-2 transition-all duration-300 font-semibold group cursor-pointer">
+                        <i class="fas fa-envelope text-2xl group-hover:animate-bounce"></i> Email Saya
+                    </a>
+                    <!-- Tombol Download CV Tambahan -->
+                    <a href="#" class="flex items-center gap-2 px-8 py-4 bg-white text-slate-700 border-2 border-slate-200 rounded-full shadow-sm hover:border-secondary hover:text-secondary hover:shadow-lg hover:-translate-y-2 transition-all duration-300 font-semibold group cursor-pointer">
+                        <i class="fas fa-file-download text-xl group-hover:animate-bounce"></i> Download CV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="zoom-in">
+                <h2 class="text-sm font-bold tracking-widest text-secondary uppercase mb-2">Academic Journey</h2>
+                <h3 class="text-3xl md:text-4xl font-heading font-bold text-primary">Education Background</h3>
+            </div>
+            
+            <div class="relative border-l-2 border-slate-100 ml-3 md:ml-6 space-y-12">
+                <!-- Education Item 1 -->
+                <div class="relative pl-8 md:pl-0 group" data-aos="fade-right" data-aos-delay="100">
+                    <div class="hidden md:block absolute -left-[45px] top-1 h-20 w-20 bg-white rounded-full border-4 border-slate-50 flex items-center justify-center shadow-sm group-hover:border-blue-100 group-hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-university text-2xl text-secondary group-hover:animate-bounce"></i>
+                    </div>
+                    <div class="md:ml-20 bg-slate-50 rounded-2xl p-6 md:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-slate-100 relative hover:border-blue-200">
+                        <span class="md:hidden absolute -left-10 top-6 h-4 w-4 rounded-full bg-secondary border-4 border-white shadow group-hover:scale-150 transition-transform duration-300"></span>
+                        <h4 class="text-xl font-bold text-primary mb-1">Universitas Islam Negeri Walisongo</h4>
+                        <p class="text-secondary font-medium mb-3">Fakultas Kedokteran</p>
+                        <p class="text-slate-500 text-sm">Menempuh pendidikan medis untuk mengintegrasikan ilmu kesehatan, penelitian inovatif, dan pelayanan umat.</p>
+                    </div>
+                </div>
+
+                <!-- Education Item 2 -->
+                <div class="relative pl-8 md:pl-0 group" data-aos="fade-left" data-aos-delay="200">
+                    <div class="hidden md:block absolute -left-[45px] top-1 h-20 w-20 bg-white rounded-full border-4 border-slate-50 flex items-center justify-center shadow-sm group-hover:border-slate-200 group-hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-school text-2xl text-slate-400 group-hover:text-primary transition-colors duration-300"></i>
+                    </div>
+                    <div class="md:ml-20 bg-slate-50 rounded-2xl p-6 md:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-slate-100 relative hover:border-slate-300">
+                        <span class="md:hidden absolute -left-10 top-6 h-4 w-4 rounded-full bg-slate-300 border-4 border-white shadow group-hover:scale-150 transition-transform duration-300"></span>
+                        <h4 class="text-xl font-bold text-primary mb-1">SMA Trensains Tebuireng</h4>
+                        <p class="text-slate-600 font-medium mb-2">Pesantren Sains Tebuireng</p>
+                    </div>
+                </div>
+
+                <!-- Education Item 3 -->
+                <div class="relative pl-8 md:pl-0 group" data-aos="fade-right" data-aos-delay="300">
+                    <div class="hidden md:block absolute -left-[45px] top-1 h-20 w-20 bg-white rounded-full border-4 border-slate-50 flex items-center justify-center shadow-sm group-hover:border-slate-200 group-hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-book text-2xl text-slate-400 group-hover:text-primary transition-colors duration-300"></i>
+                    </div>
+                    <div class="md:ml-20 bg-slate-50 rounded-2xl p-6 md:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-slate-100 relative hover:border-slate-300">
+                        <span class="md:hidden absolute -left-10 top-6 h-4 w-4 rounded-full bg-slate-300 border-4 border-white shadow group-hover:scale-150 transition-transform duration-300"></span>
+                        <h4 class="text-xl font-bold text-primary mb-1">SMPIT PPTQ Alam Harapan Umat Purbalingga</h4>
+                    </div>
+                </div>
+
+                <!-- Education Item 4 -->
+                <div class="relative pl-8 md:pl-0 group" data-aos="fade-left" data-aos-delay="400">
+                    <div class="hidden md:block absolute -left-[45px] top-1 h-20 w-20 bg-white rounded-full border-4 border-slate-50 flex items-center justify-center shadow-sm group-hover:border-slate-200 group-hover:scale-110 transition-all duration-300">
+                        <i class="fas fa-pencil-alt text-2xl text-slate-400 group-hover:text-primary transition-colors duration-300"></i>
+                    </div>
+                    <div class="md:ml-20 bg-slate-50 rounded-2xl p-6 md:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-slate-100 relative hover:border-slate-300">
+                        <span class="md:hidden absolute -left-10 top-6 h-4 w-4 rounded-full bg-slate-300 border-4 border-white shadow group-hover:scale-150 transition-transform duration-300"></span>
+                        <h4 class="text-xl font-bold text-primary mb-1">SDIT Alam Harapan Ummat Purbalingga</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="achievements" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="zoom-in">
+                <h2 class="text-sm font-bold tracking-widest text-secondary uppercase mb-2">Milestones</h2>
+                <h3 class="text-3xl md:text-4xl font-heading font-bold text-primary">Achievements</h3>
+                <p class="mt-4 text-slate-500 max-w-2xl mx-auto">Pengakuan internasional di bidang sains, biologi, dan inovasi terapan.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Gold Medal -->
+                <div class="hover-shine bg-white rounded-2xl p-8 border-t-4 border-[#FFD700] shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 text-center" data-aos="zoom-in-up" data-aos-delay="100">
+                    <div class="w-16 h-16 mx-auto bg-yellow-50 rounded-full flex items-center justify-center mb-6 animate-float">
+                        <i class="fas fa-medal text-3xl text-[#FFD700] drop-shadow-md"></i>
+                    </div>
+                    <h4 class="text-[#FFD700] font-bold tracking-wide uppercase text-sm mb-3">Gold Medal</h4>
+                    <p class="font-heading font-bold text-primary text-lg leading-snug">International Conferences in Biological Science X Open Bioproject Competition</p>
+                </div>
+
+                <!-- Silver Medal -->
+                <div class="hover-shine bg-white rounded-2xl p-8 border-t-4 border-[#C0C0C0] shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 text-center" data-aos="zoom-in-up" data-aos-delay="200">
+                    <div class="w-16 h-16 mx-auto bg-gray-50 rounded-full flex items-center justify-center mb-6 animate-float-delayed">
+                        <i class="fas fa-medal text-3xl text-[#C0C0C0] drop-shadow-md"></i>
+                    </div>
+                    <h4 class="text-[#9CA3AF] font-bold tracking-wide uppercase text-sm mb-3">Silver Medal</h4>
+                    <p class="font-heading font-bold text-primary text-lg leading-snug">Indonesian International Applied Science Olympiad</p>
+                </div>
+
+                <!-- Bronze Medal -->
+                <div class="hover-shine bg-white rounded-2xl p-8 border-t-4 border-[#CD7F32] shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 text-center" data-aos="zoom-in-up" data-aos-delay="300">
+                    <div class="w-16 h-16 mx-auto bg-orange-50 rounded-full flex items-center justify-center mb-6 animate-float">
+                        <i class="fas fa-medal text-3xl text-[#CD7F32] drop-shadow-md"></i>
+                    </div>
+                    <h4 class="text-[#CD7F32] font-bold tracking-wide uppercase text-sm mb-3">Bronze Medal</h4>
+                    <p class="font-heading font-bold text-primary text-lg leading-snug">World Youth Invention and Innovation Award</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Keterampilan / Skills Baru -->
+    <section id="skills" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="zoom-in">
+                <h2 class="text-sm font-bold tracking-widest text-secondary uppercase mb-2">Expertise</h2>
+                <h3 class="text-3xl md:text-4xl font-heading font-bold text-primary">Keahlian & Minat Utama</h3>
+                <p class="mt-4 text-slate-500 max-w-2xl mx-auto">Kombinasi antara kemampuan analitis, ilmu sains, riset mendalam, serta keterampilan komunikasi.</p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                <!-- Skill Tags -->
+                <div class="px-6 py-3 bg-slate-50 border border-slate-200 rounded-full text-slate-700 font-medium hover:bg-secondary hover:text-white hover:border-secondary transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default">
+                    <i class="fas fa-microscope mr-2 text-secondary hover:text-white"></i> Medical Research
+                </div>
+                <div class="px-6 py-3 bg-slate-50 border border-slate-200 rounded-full text-slate-700 font-medium hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default">
+                    <i class="fas fa-dna mr-2 text-teal-500 hover:text-white"></i> Biotechnology & Stem Cells
+                </div>
+                <div class="px-6 py-3 bg-slate-50 border border-slate-200 rounded-full text-slate-700 font-medium hover:bg-green-500 hover:text-white hover:border-green-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default">
+                    <i class="fas fa-leaf mr-2 text-green-500 hover:text-white"></i> Phytochemical Analysis
+                </div>
+                <div class="px-6 py-3 bg-slate-50 border border-slate-200 rounded-full text-slate-700 font-medium hover:bg-purple-500 hover:text-white hover:border-purple-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default">
+                    <i class="fas fa-chart-line mr-2 text-purple-500 hover:text-white"></i> Investment & Trading Analysis
+                </div>
+                <div class="px-6 py-3 bg-slate-50 border border-slate-200 rounded-full text-slate-700 font-medium hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default">
+                    <i class="fas fa-language mr-2 text-blue-500 hover:text-white"></i> Arabic Education
+                </div>
+                <div class="px-6 py-3 bg-slate-50 border border-slate-200 rounded-full text-slate-700 font-medium hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default">
+                    <i class="fas fa-music mr-2 text-orange-500 hover:text-white"></i> Piano & Acoustics
+                </div>
+                <div class="px-6 py-3 bg-slate-50 border border-slate-200 rounded-full text-slate-700 font-medium hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default">
+                    <i class="fas fa-users mr-2 text-red-500 hover:text-white"></i> Leadership & Organization
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ubah background Experience menjadi bg-slate-50 agar berselang-seling cantik dengan Skills -->
+    <section id="experience" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="zoom-in">
+                <h2 class="text-sm font-bold tracking-widest text-secondary uppercase mb-2">Leadership & Activities</h2>
+                <h3 class="text-3xl md:text-4xl font-heading font-bold text-primary">Pengalaman</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Exp 1 -->
+                <div class="group p-6 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-start gap-4">
+                        <div class="p-4 bg-blue-100 text-secondary rounded-xl group-hover:bg-secondary group-hover:text-white transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-sm">
+                            <i class="fas fa-quran text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg text-primary mb-1 group-hover:text-secondary transition-colors">Ketua Organisasi Tahfidz</h4>
+                            <p class="text-slate-500 text-sm">SMA Trensains Tebuireng</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exp 2 -->
+                <div class="group p-6 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-teal-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-start gap-4">
+                        <div class="p-4 bg-teal-100 text-accent rounded-xl group-hover:bg-accent group-hover:text-white transition-all duration-500 group-hover:-rotate-12 group-hover:scale-110 shadow-sm">
+                            <i class="fas fa-language text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg text-primary mb-1 group-hover:text-accent transition-colors">Person In Charge of Arabic Education</h4>
+                            <p class="text-slate-500 text-sm">Language Improvement Department</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exp 3 -->
+                <div class="group p-6 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-purple-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-start gap-4">
+                        <div class="p-4 bg-purple-100 text-purple-600 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-sm">
+                            <i class="fas fa-pen-nib text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg text-primary mb-1 group-hover:text-purple-600 transition-colors">Sekretaris Organisasi Media & Pengembangan Bahasa</h4>
+                            <p class="text-slate-500 text-sm">Pengelolaan administrasi dan redaksi pengembangan bahasa.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exp 4 -->
+                <div class="group p-6 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-orange-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer" data-aos="fade-up" data-aos-delay="400">
+                    <div class="flex items-start gap-4">
+                        <div class="p-4 bg-orange-100 text-orange-600 rounded-xl group-hover:bg-orange-600 group-hover:text-white transition-all duration-500 group-hover:-rotate-12 group-hover:scale-110 shadow-sm">
+                            <i class="fas fa-music text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg text-primary mb-1 group-hover:text-orange-600 transition-colors">Pianis Upacara HUT RI Ke-79</h4>
+                            <p class="text-slate-500 text-sm">SMA Trensains</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="publications" class="py-20 bg-slate-900 text-white relative overflow-hidden">
+        <!-- Abstract background elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-10 pointer-events-none">
+            <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-secondary blur-3xl animate-pulse-soft"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-accent blur-3xl animate-pulse-soft" style="animation-delay: 2.5s;"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16" data-aos="zoom-in">
+                <h2 class="text-sm font-bold tracking-widest text-accent uppercase mb-2">Research & Articles</h2>
+                <h3 class="text-3xl md:text-4xl font-heading font-bold text-white">Beberapa Artikel Ilmiah</h3>
+                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">Eksplorasi penelitian yang mencakup bidang medis, bioteknologi, akustik, hingga agrikultur inovatif.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Article 1 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:bg-slate-800 hover:border-secondary hover:shadow-[0_0_20px_rgba(2,132,199,0.3)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row gap-4 items-start" data-aos="fade-right">
+                    <div class="p-4 bg-slate-700/50 text-accent rounded-lg group-hover:bg-secondary group-hover:text-white group-hover:rotate-6 transition-all duration-300 shrink-0">
+                        <i class="fas fa-microscope text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-100 group-hover:text-white mb-2 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-teal-400 transition-all">
+                            AI-Driven Enhancement of iPSCs-Derived Stem Cells in Engineered Biological Microrobots for Precision Therapy of Degenerative Diseases
+                        </h4>
+                        <p class="text-sm text-slate-400">Bidang: Medis & Bioteknologi</p>
+                    </div>
+                </div>
+
+                <!-- Article 2 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:bg-slate-800 hover:border-secondary hover:shadow-[0_0_20px_rgba(2,132,199,0.3)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row gap-4 items-start" data-aos="fade-left">
+                    <div class="p-4 bg-slate-700/50 text-accent rounded-lg group-hover:bg-secondary group-hover:text-white group-hover:-rotate-6 transition-all duration-300 shrink-0">
+                        <i class="fas fa-leaf text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-100 group-hover:text-white mb-2 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-teal-400 transition-all">
+                            Enhancing Holistic Chronic Eczema Therapy via Quad-Phytochemical Synergy of Curcuma, Syzygium, Brassica juncea, and oleracea
+                        </h4>
+                        <p class="text-sm text-slate-400">Bidang: Fitokimia & Dermatologi</p>
+                    </div>
+                </div>
+
+                <!-- Article 3 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:bg-slate-800 hover:border-secondary hover:shadow-[0_0_20px_rgba(2,132,199,0.3)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row gap-4 items-start" data-aos="fade-right">
+                    <div class="p-4 bg-slate-700/50 text-accent rounded-lg group-hover:bg-secondary group-hover:text-white group-hover:rotate-6 transition-all duration-300 shrink-0">
+                        <i class="fas fa-seedling text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-100 group-hover:text-white mb-2 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-teal-400 transition-all">
+                            Innovative Nitrate Absorption Using Teak Leaf Tannins as a Dual Approach to Eutrophication Control and Nitrate Fertilizer Source
+                        </h4>
+                        <p class="text-sm text-slate-400">Bidang: Lingkungan & Agrikultur</p>
+                    </div>
+                </div>
+
+                <!-- Article 4 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:bg-slate-800 hover:border-secondary hover:shadow-[0_0_20px_rgba(2,132,199,0.3)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row gap-4 items-start" data-aos="fade-left">
+                    <div class="p-4 bg-slate-700/50 text-accent rounded-lg group-hover:bg-secondary group-hover:text-white group-hover:-rotate-6 transition-all duration-300 shrink-0">
+                        <i class="fas fa-volume-up text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-100 group-hover:text-white mb-2 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-teal-400 transition-all">
+                            Studi Daya Suara Destruktif dan Resonansi pada QS Al-Qamar Ayat 31 Melalui Eksplorasi Ilmu Akustik
+                        </h4>
+                        <p class="text-sm text-slate-400">Bidang: Fisika Akustik & Studi Islam</p>
+                    </div>
+                </div>
+
+                <!-- Article 5 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:bg-slate-800 hover:border-secondary hover:shadow-[0_0_20px_rgba(2,132,199,0.3)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row gap-4 items-start" data-aos="fade-right">
+                    <div class="p-4 bg-slate-700/50 text-accent rounded-lg group-hover:bg-secondary group-hover:text-white group-hover:rotate-6 transition-all duration-300 shrink-0">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-100 group-hover:text-white mb-2 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-teal-400 transition-all">
+                            A Preliminary Study on Seating Selection Tendencies and Preferencences Among UIN Walisongo Medical Students in the Classroom
+                        </h4>
+                        <p class="text-sm text-slate-400">Bidang: Pendidikan & Sosiologi Ruang</p>
+                    </div>
+                </div>
+
+                <!-- Article 6 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:bg-slate-800 hover:border-secondary hover:shadow-[0_0_20px_rgba(2,132,199,0.3)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row gap-4 items-start" data-aos="fade-left">
+                    <div class="p-4 bg-slate-700/50 text-accent rounded-lg group-hover:bg-secondary group-hover:text-white group-hover:-rotate-6 transition-all duration-300 shrink-0">
+                        <i class="fas fa-brain text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-slate-100 group-hover:text-white mb-2 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-teal-400 transition-all">
+                            Studi Pendahuluan Pengaruh Pembelajaran Filsafat Terhadap kemampuan Kognitif siswa
+                        </h4>
+                        <p class="text-sm text-slate-400">Bidang: Kognitif & Filsafat Pendidikan</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center" data-aos="zoom-in" data-aos-offset="0">
+                <a href="https://scholar.google.com/citations?user=Lbxna8gAAAAJ&hl=id" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-secondary to-accent text-white rounded-full font-medium hover:scale-110 transition-all duration-300 shadow-[0_0_20px_rgba(13,148,136,0.4)] hover:shadow-[0_0_30px_rgba(13,148,136,0.7)] group">
+                    Lihat Publikasi Lengkap di Google Scholar <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <p class="font-heading text-xl text-white font-bold tracking-tight mb-2">Fahmi Achmad Darojat</p>
+                <p class="text-sm">Medical Student | Independent Researcher | Investor</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="https://www.researchgate.net/profile/Fahmi-Darojat-2?ev=hdr_xprf" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-teal-600 hover:text-white transition-colors" title="ResearchGate">
+                    <i class="fab fa-researchgate"></i>
+                </a>
+                <a href="https://scholar.google.com/citations?user=Lbxna8gAAAAJ&hl=id" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors" title="Google Scholar">
+                    <i class="fas fa-graduation-cap"></i>
+                </a>
+                <a href="https://orcid.org/0009-0002-6792-3718" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-green-600 hover:text-white transition-colors" title="ORCID">
+                    <i class="fab fa-orcid"></i>
+                </a>
+                
+                <a href="https://wa.me/6285135336002" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-colors" title="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="mailto:fahmiayakina@gmail.com" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors" title="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-8 border-t border-slate-800 text-sm text-center">
+            <p>&copy; 2024 Fahmi Achmad Darojat. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Tombol Back to Top -->
+    <button id="backToTop" class="back-to-top fixed bottom-8 right-8 z-50 bg-secondary text-white w-12 h-12 rounded-full shadow-[0_0_15px_rgba(2,132,199,0.5)] flex items-center justify-center hover:bg-primary hover:scale-110 transition-all duration-300 focus:outline-none cursor-pointer">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <script>
+        // Initialize Animate On Scroll
+        AOS.init({
+            once: true,
+            offset: 50,
+            duration: 1000,
+            easing: 'ease-out-back',
+        });
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Navbar styling on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-sm');
+            } else {
+                nav.classList.remove('shadow-sm');
+            }
+        });
+
+        // Typewriter Effect for Hero Section
+        const textArray = ["An Independent Researcher", "Medical Student", "Investor", "Trader"];
+        const typingDelay = 100;
+        const erasingDelay = 50;
+        const newTextDelay = 2000;
+        let textArrayIndex = 0;
+        let charIndex = 0;
+        const typedTextSpan = document.getElementById("typewriter");
+
+        function type() {
+            if (charIndex < textArray[textArrayIndex].length) {
+                typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(type, typingDelay);
+            } 
+            else {
+                setTimeout(erase, newTextDelay);
+            }
+        }
+
+        function erase() {
+            if (charIndex > 0) {
+                typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex-1);
+                charIndex--;
+                setTimeout(erase, erasingDelay);
+            } 
+            else {
+                textArrayIndex++;
+                if(textArrayIndex >= textArray.length) textArrayIndex = 0;
+                setTimeout(type, typingDelay + 1100);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if(textArray.length) setTimeout(type, newTextDelay + 250);
+        });
+
+        
+        // 1. Logika Kustom Kursor
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        let mouseX = 0, mouseY = 0;
+        let outlineX = 0, outlineY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Pembaruan seketika untuk titik kursor
+            if(cursorDot) {
+                cursorDot.style.left = `${mouseX}px`;
+                cursorDot.style.top = `${mouseY}px`;
+            }
+        });
+
+        // Efek mengikuti halus untuk cincin kursor
+        function animateCursor() {
+            let dx = mouseX - outlineX;
+            let dy = mouseY - outlineY;
+            outlineX += dx * 0.15; // Faktor kehalusan
+            outlineY += dy * 0.15;
+            
+            if(cursorOutline) {
+                cursorOutline.style.left = `${outlineX}px`;
+                cursorOutline.style.top = `${outlineY}px`;
+            }
+            requestAnimationFrame(animateCursor);
+        }
+        if(window.innerWidth > 768) animateCursor();
+
+        // Mengubah status kursor saat menyentuh elemen interaktif
+        const interactables = document.querySelectorAll('a, button, .cursor-pointer, .hover-shine, .group');
+        interactables.forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        // 2. Scroll Progress Bar
+        const scrollProgress = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            if(scrollProgress) scrollProgress.style.width = progress + '%';
+        });
+
+        // 3. Efek Parallax Mouse untuk Latar Belakang (Hero Section)
+        const heroSection = document.querySelector('.bg-pattern');
+        const orbs = document.querySelectorAll('.animate-float, .animate-float-delayed');
+        
+        if(heroSection && window.innerWidth > 768) {
+            heroSection.addEventListener('mousemove', (e) => {
+                const x = (window.innerWidth - e.pageX * 2) / 90;
+                const y = (window.innerHeight - e.pageY * 2) / 90;
+                
+                if(orbs[0]) orbs[0].style.transform = `translate(${x * 2}px, ${y * 2}px)`;
+                if(orbs[1]) orbs[1].style.transform = `translate(${-x * 2}px, ${-y * 2}px)`;
+            });
+            
+            heroSection.addEventListener('mouseleave', () => {
+                if(orbs[0]) orbs[0].style.transform = `translate(0, 0)`;
+                if(orbs[1]) orbs[1].style.transform = `translate(0, 0)`;
+            });
+        }
+
+        // 4. Efek Kemiringan 3D (3D Tilt Effect) untuk Kartu
+        const tiltCards = document.querySelectorAll('.hover-shine, .group, .bg-slate-50.rounded-2xl'); 
+        
+        tiltCards.forEach(card => {
+            if (window.innerWidth > 768) {
+                card.classList.add('tilt-card');
+                
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -12; // Rotasi sumbu X (Max 12 deg)
+                    const rotateY = ((x - centerX) / centerX) * 12;  // Rotasi sumbu Y (Max 12 deg)
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    card.style.transition = 'none'; // Matikan transisi saat digerakkan
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                    card.style.transition = 'transform 0.4s ease-out'; // Efek kembali lembut
+                });
+                
+                card.addEventListener('mouseenter', () => {
+                    card.style.transition = 'transform 0.1s ease-out'; 
+                });
+            }
+        });
+
+        // 5. Animasi Gelombang Teks (Text Wave)
+        const waveTexts = document.querySelectorAll('span.cursor-pointer');
+        waveTexts.forEach(el => {
+            const text = el.innerText;
+            el.innerHTML = '';
+            el.classList.add('text-wave');
+            [...text].forEach((char, i) => {
+                const span = document.createElement('span');
+                span.innerText = char === ' ' ? '\u00A0' : char; // Simpan spasi
+                span.style.animationDelay = `${i * 0.05}s`;
+                el.appendChild(span);
+            });
+        });
+
+        // 6. Logika Tombol Back to Top
+        const backToTopBtn = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
